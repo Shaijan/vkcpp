@@ -1759,8 +1759,21 @@ void writeExceptionCheck(std::ofstream & ofs, std::string const& indentation, st
   }
   else
   {
+    /* vkAcquireNextImageKHR has 4 success codes
     assert(successCodes.size() == 2);
     ofs << indentation << "  if ( ( result != Result::" << successCodes[0] << " ) && ( result != Result::" << successCodes[1] << " ) )" << std::endl;
+    */
+    
+    ofs << indentation << "  if (";
+    
+    for(auto const& successCode : successCodes)
+    {
+        ofs << " ( result != Result::" << successCode << " ) ";
+        if(&successCode != &successCodes.back())
+            ofs << "&&";
+    }
+    
+    ofs << ")" << std::endl;
   }
   ofs << indentation << "  {" << std::endl
     << indentation << "    throw std::system_error( result, \"vk::";
